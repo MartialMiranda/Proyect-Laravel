@@ -23,7 +23,13 @@ class ReservationController extends Controller
         return view('reservation.index', compact('reservations'))
             ->with('i', (request()->input('page', 1) - 1) * $reservations->perPage());
     }
+    public function indexApi()
+    {
+        $reservations = Reservation::all();
+        $reservations = Reservation::with(['client', 'person', 'offeredMenu'])->paginate(4);
 
+        return response()->json(['reservations' => $reservations]);
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -51,6 +57,17 @@ class ReservationController extends Controller
             ->with('success', 'Reservation created successfully.');
     }
 
+    public function storeApi(Request $request)
+    {
+        $request->validate([
+            // ...validaciones aquí
+        ]);
+
+        $reservation = Reservation::create($request->all());
+
+        return response()->json(['reservation' => $reservation], 201);
+    }
+
     /**
      * Display the specified resource.
      *
@@ -62,6 +79,17 @@ class ReservationController extends Controller
         $reservation = Reservation::find($id);
 
         return view('reservation.show', compact('reservation'));
+    }
+
+    public function showApi($id)
+    {
+        $reservation = Reservation::find($id);
+
+        if (!$reservation) {
+            return response()->json(['error' => 'Reservation not found'], 404);
+        }
+
+        return response()->json(['reservation' => $reservation]);
     }
 
     /**

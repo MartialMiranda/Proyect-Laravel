@@ -2,12 +2,16 @@ import React, { useState, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
+
 import Pagination from "./Pagination";
+import Modal from "./Modal";
 
 const TarjetaPlato = () => {
     const [offeredMenus, setOfferedMenus] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [lastPage, setLastPage] = useState(1);
+    const [menu, setMenu] = useState(null);
+    const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -32,10 +36,16 @@ const TarjetaPlato = () => {
         return fecha.toLocaleDateString("es-ES", options);
     };
 
-    const handleReservaClick = () => {
-        window.location.href = "/reserva";
+    const handleReservaClick = (menu) => {
+        setMenu(menu);
+        setShowModal(true);
     };
 
+    const handleSubmit = (data) => {
+        // Aquí puedes agregar el código para enviar los datos a través de una API
+        console.log("Datos enviados:", data);
+        setShowModal(false);
+    };
     function formatTime(timeString) {
         const date = new Date(timeString);
         const formattedTime = date.toLocaleTimeString([], {
@@ -61,7 +71,6 @@ const TarjetaPlato = () => {
                                     className="img-fluid rounded-top"
                                     alt="imagenPlato"
                                     style={{
-                                        height: "400px",
                                         height: "400px",
                                         objectFit: "cover",
                                     }}
@@ -121,7 +130,7 @@ const TarjetaPlato = () => {
                                         ))}
                                     </div>
                                     <div className="col">
-                                        <p
+                                        <div
                                             className="fw-bold text-center mt-0 rounded"
                                             style={{
                                                 background: "#FFA800",
@@ -140,7 +149,8 @@ const TarjetaPlato = () => {
                                                     5
                                                 )}
                                             </p>
-                                        </p>
+                                        </div>
+
                                         <p className="fw-semibold text-center mb-0">
                                             {formatFecha(menu.date)}
                                         </p>
@@ -170,7 +180,7 @@ const TarjetaPlato = () => {
                                     <button
                                         id="botonReservar"
                                         type="button"
-                                        onClick={handleReservaClick}
+                                        onClick={() => handleReservaClick(menu)}
                                         className="btn fw-bold col-auto"
                                         style={{
                                             background: "#FFA800",
@@ -192,6 +202,13 @@ const TarjetaPlato = () => {
                         onPageChange={handlePageChange}
                     />
                 </div>
+                {showModal && (
+                    <Modal
+                        onSubmit={handleSubmit}
+                        onClose={() => setShowModal(false)}
+                        menu={menu}
+                    />
+                )}
             </div>
         </div>
     );

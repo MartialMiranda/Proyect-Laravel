@@ -18,8 +18,7 @@
                         </div>
                     </div>
 
-                    <div class="card-body">
-                        
+                    <div class="card-body">                   
                         <div class="form-group">
                             <strong>Nit:</strong>
                             {{ $client->nit }}

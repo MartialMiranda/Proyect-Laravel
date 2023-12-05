@@ -40,9 +40,7 @@ Route::get('/', function () {
 Route::get('/menus', function () {
     return view('menu/menus');
 })->name('menus');
-Route::get('/reserva', function () {
-    return view('menu/reserva');
-})->name('reserva');
+
 
 // Rutas de inicio de sesión
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -59,6 +57,10 @@ Route::post('/logout', [AuthController::class, 'logout']);
 
 
 Route::group(['middleware' => 'auth'], function () {
+    
+    Route::get('/reservas', function () {
+        return view('menu/reservas');
+    })->name('reservas');
     // people
     Route::resource('people', PersonController::class);
 

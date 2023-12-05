@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Dish;
+use App\Models\DishType;
+use App\Models\OfferedMenu;
 use Illuminate\Http\Request;
 
 /**
@@ -16,13 +18,18 @@ class DishController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $dishes = Dish::paginate();
+        $status = $request->query('status', 'A');
+        $dishes = Dish::where('status', $status)->paginate();
 
-        return view('dish.index', compact('dishes'))
+        return view('dish.index', compact('dishes', 'status'))
             ->with('i', (request()->input('page', 1) - 1) * $dishes->perPage());
     }
+
+
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -32,7 +39,10 @@ class DishController extends Controller
     public function create()
     {
         $dish = new Dish();
-        return view('dish.create', compact('dish'));
+        $dishType = DishType::pluck('name', 'id');
+        $offeredMenu = OfferedMenu::pluck('date', 'id');
+
+        return view('dish.create', compact('dish', 'dishType', 'offeredMenu'));
     }
 
     /**
@@ -73,8 +83,10 @@ class DishController extends Controller
     public function edit($id)
     {
         $dish = Dish::find($id);
+        $dishType = DishType::pluck('name', 'id');
+        $offeredMenu = OfferedMenu::pluck('date', 'id');
 
-        return view('dish.edit', compact('dish'));
+        return view('dish.edit', compact('dish', 'dishType', 'offeredMenu'));
     }
 
     /**
@@ -101,9 +113,11 @@ class DishController extends Controller
      */
     public function destroy($id)
     {
-        $dish = Dish::find($id)->delete();
+        $dish = Dish::find($id);
+        $dish->status = 'I';
+        $dish->save();
 
         return redirect()->route('dishes.index')
-            ->with('success', 'Dish deleted successfully');
+            ->with('success', 'Dish updated successfully');
     }
 }

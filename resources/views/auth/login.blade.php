@@ -115,6 +115,7 @@
                     <span class="error-message">{{ $message }}</span>
                 @enderror
             </div>
+            <div id="menus" data-user-id="{{ $userId }}"></div>
             <button type="submit">Login</button>
         </form>
         <div class="form-section">

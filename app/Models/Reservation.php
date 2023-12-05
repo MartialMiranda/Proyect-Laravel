@@ -34,9 +34,8 @@ class Reservation extends Model
     
     static $rules = [
 		'date' => 'required',
-		'num_people' => 'required',
-		'total_amount' => 'required',
-		'receipt' => 'required',
+		'required|integer|min:0|max:10',
+		'total_amount' => 'required',		
 		'status' => 'required',
 		'client_id' => 'required',
 		'person_id' => 'required',

@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Person;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Person;
+
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
@@ -14,8 +15,20 @@ class AuthController extends Controller
     // Método para mostrar el formulario de inicio de sesión
     public function showLoginForm()
     {
-        return view('auth.login');
+        // Verifica si el usuario está autenticado
+        if (auth()->check()) {
+            // Obtiene el ID del usuario autenticado
+            $userId = auth()->user()->id;
+        } else {
+            // Si no está autenticado, asigna null
+            $userId = null;
+        }
+
+        // Retorna la vista con el valor de $userId
+        return view('auth.login', compact('userId'));
     }
+
+
 
     // Método para manejar el inicio de sesión
     public function login(Request $request)
